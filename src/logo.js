@@ -20,7 +20,7 @@ export default function drawLogo(settings)
 		return el;
 	};
 
-	const {radius, padding, lineWidth, lStartAngle, zAngles0, zAngles1, zAngles2} = settings;
+	const {radius, padding, lineWidth, lStartAngle, zAngles0, zAngles1, zAngles2, isPath} = settings;
 
 	const size = new Vec((radius + padding) * 2, (radius + padding) * 2);
 	const center = size.div(2)
@@ -33,14 +33,90 @@ export default function drawLogo(settings)
 	svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
 	svg.setAttribute("viewBox", `0 0 ${size.x} ${size.y}`);
 
-	appendSvg('circle', {
-		cx: center.x,
-		cy: center.y,
-		r: radius,
-		fill: "none",
-		stroke: "red",
-		'stroke-width': lineWidth
-	});
+	const addCircle = (center, radius, lineWidth, stroke, id) => {
+		if(isPath)
+		{
+			appendSvg('circle', {
+				cx: center.x,
+				cy: center.y,
+				r: radius - lineWidth / 2,
+				fill: "none",
+				stroke: stroke,
+				'stroke-width': 1,
+				id
+			});
+
+			appendSvg('circle', {
+				cx: center.x,
+				cy: center.y,
+				r: radius + lineWidth / 2,
+				fill: "none",
+				stroke: stroke,
+				'stroke-width': 1,
+				id
+			});
+		}
+		else
+		{
+			return appendSvg('circle', {
+				cx: center.x,
+				cy: center.y,
+				r: radius,
+				fill: "none",
+				stroke: stroke,
+				'stroke-width': lineWidth,
+				id
+			});
+		}
+	};
+
+	const addLine = (p1, p2, lineWidth, stroke, id) => {
+		if(isPath)
+		{
+			const vec = p2.sub(p1);
+			const perp = new Vec(vec.y, -vec.x).normalize().mul(lineWidth / 2);
+
+			appendSvg('line', {
+				x1: p1.x + perp.x,
+				y1: p1.y + perp.y,
+				x2: p2.x + perp.x,
+				y2: p2.y + perp.y,
+				r: radius,
+				fill: "none",
+				stroke: "red",
+				'stroke-width': 1,
+				id
+			});
+
+			appendSvg('line', {
+				x1: p1.x - perp.x,
+				y1: p1.y - perp.y,
+				x2: p2.x - perp.x,
+				y2: p2.y - perp.y,
+				r: radius,
+				fill: "none",
+				stroke: "red",
+				'stroke-width': 1,
+				id
+			});
+		}
+		else
+		{
+			return appendSvg('line', {
+				x1: p1.x,
+				y1: p1.y,
+				x2: p2.x,
+				y2: p2.y,
+				r: radius,
+				fill: "none",
+				stroke: "red",
+				'stroke-width': lineWidth,
+				id
+			});
+		}
+	};
+
+	addCircle(center, radius, lineWidth, 'red', 'circle');	
 
 	const zAngles = [
 		zAngles0 - 90,
@@ -60,51 +136,15 @@ export default function drawLogo(settings)
 
 		zSegments.push({p1, p2});
 
-		appendSvg('line', {
-			x1: p1.x,
-			y1: p1.y,
-			x2: p2.x,
-			y2: p2.y,
-			r: radius,
-			fill: "none",
-			stroke: "red",
-			'stroke-width': lineWidth
-		});
+		addLine(p1, p2, lineWidth, "red", 'zSegment' + 0);
 	}
 
 	const lStart = Vec.fromAngle(lStartAngle - 90).mul(radius).add(center);
-
 	const lMid = lineLineIntersection(zSegments[1].p1, zSegments[1].p2, lStart, lStart.add(0, 1));
-
 	const lEnd = circleSegmentIntersection(center, radius, lMid, lMid.add(zSegments[2].p2.sub(zSegments[2].p1).normalize().mul(radius * radius)))[0];
 
-	//for(let x = 0; x < zPoints.length - 1; x++)
-	{
-		const p1 = lStart;
-		const p2 = center;
-
-		appendSvg('line', {
-			x1: lStart.x,
-			y1: lStart.y,
-			x2: lMid.x,
-			y2: lMid.y,
-			r: radius,
-			fill: "none",
-			stroke: "red",
-			'stroke-width': lineWidth
-		});
-
-		appendSvg('line', {
-			x1: lEnd.x,
-			y1: lEnd.y,
-			x2: lMid.x,
-			y2: lMid.y,
-			r: radius,
-			fill: "none",
-			stroke: "red",
-			'stroke-width': lineWidth
-		});
-	}
-	
+	addLine(lStart, lMid, lineWidth, "red", 'lSegment' + 0);
+	addLine(lMid, lEnd, lineWidth, "red", 'lSegment' + 1);
+		
 	return svg;
 }

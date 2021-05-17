@@ -33,19 +33,19 @@ export function circleSegmentIntersection(center, radius, p1, p2){
     if(u1 <= 1 && u1 >= 0){  // add point if on the line segment
         retP1.x = p1.x + v1.x * u1;
         retP1.y = p1.y + v1.y * u1;
-        ret[0] = retP1;
+        ret[0] = new Vec(retP1);
     }
     if(u2 <= 1 && u2 >= 0){  // second add point if on the line segment
         retP2.x = p1.x + v1.x * u2;
         retP2.y = p1.y + v1.y * u2;
-        ret[ret.length] = retP2;
+        ret[ret.length] = new Vec(retP2);
     }       
     return ret;
 }
 
 export function downloadSvg(svg)
 {
-	var svgData = svg.outerHTML;
+	var svgData = typeof svg == 'string' ? svg : svg.outerHTML;
 	var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
 	var svgUrl = URL.createObjectURL(svgBlob);
 	var downloadLink = document.createElement("a");

@@ -14,6 +14,7 @@ window.onload = () =>
 		zAngles0: -60 + 360,
 		zAngles1: -110 + 360,
 		zAngles2: 140,
+		isPath: false
 	};
 
 	const settingsDef = [
@@ -51,6 +52,11 @@ window.onload = () =>
 			id: 'zAngles2',
 			name: 'Z position (End)',
 			range: [0, 360],
+		},
+		{
+			id: 'isPath',
+			name: 'As Path',
+			type: 'checkbox'
 		},
 	];
 
@@ -97,41 +103,64 @@ window.onload = () =>
 			innerText: def.name,
 		});
 
-		const sliderCell = makeDiv('td', {
-			parent: row,
-			className: 'sliderCell'
-		});
+		if(def.type == 'checkbox')
+		{
+			const checkboxCell = makeDiv('td', {
+				parent: row,
+				className: 'checkboxCell'
+			});
 
-		const slider = makeDiv('input', {
-			parent: sliderCell,
-			type: 'range',
-			className: 'slider',
-			min: def.range[0],
-			max: def.range[1],
-			value: settings[def.id],
-		});
+			const checkbox = makeDiv('input', {
+				parent: checkboxCell,
+				type: 'checkbox',
+				className: 'checkbox',
+				checked: settings[def.id],
+			});
 
-		const numberCell = makeDiv('td', {
-			parent: row,
-			className: 'numberCell'
-		});
+			checkbox.onchange = () => {
+				const val = checkbox.checked;
+				settings[def.id] = val;
+				redraw();
+			}
+		}
+		else
+		{
+			const sliderCell = makeDiv('td', {
+				parent: row,
+				className: 'sliderCell'
+			});
 
-		const number = makeDiv('input', {
-			parent: numberCell,
-			className: 'number',
-			value: settings[def.id],
-		});
+			const slider = makeDiv('input', {
+				parent: sliderCell,
+				type: 'range',
+				className: 'slider',
+				min: def.range[0],
+				max: def.range[1],
+				value: settings[def.id],
+			});
 
-		const onChange = (val) => {
-			val = parseInt(val);
-			slider.value = val;
-			number.value = val;
-			settings[def.id] = val;
-			redraw();
-		};
+			const numberCell = makeDiv('td', {
+				parent: row,
+				className: 'numberCell'
+			});
 
-		slider.oninput = () => onChange(slider.value);
-		number.onchange = () => onChange(number.value);
+			const number = makeDiv('input', {
+				parent: numberCell,
+				className: 'number',
+				value: settings[def.id],
+			});
+
+			const onChange = (val) => {
+				val = parseInt(val);
+				slider.value = val;
+				number.value = val;
+				settings[def.id] = val;
+				redraw();
+			};
+
+			slider.oninput = () => onChange(slider.value);
+			number.onchange = () => onChange(number.value);
+		}
 	}
 
 	const download = makeDiv('input', {

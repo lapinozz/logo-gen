@@ -90,3 +90,13 @@ body
 	  color: white;
 	}
 }
+
+.animate
+{
+
+}
+
+@keyframes circle {
+  0%   {stroke-width: 0;}
+  100%   {stroke-width: 20;}
+}
