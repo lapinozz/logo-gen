@@ -1,8 +1,10 @@
 import "./style/main.scss";
 
 import drawLogo from "./logo";
+import animate, {anims} from "./animations";
 import {makeDiv, downloadSvg} from "./utils";
 
+let animTimeoutHandle = null;
 
 window.onload = () => 
 {
@@ -14,7 +16,8 @@ window.onload = () =>
 		zAngles0: -60 + 360,
 		zAngles1: -110 + 360,
 		zAngles2: 140,
-		isPath: false
+		isPath: false,
+		anim: 'basic'
 	};
 
 	const settingsDef = [
@@ -58,6 +61,11 @@ window.onload = () =>
 			name: 'As Path',
 			type: 'checkbox'
 		},
+		{
+			id: 'anim',
+			name: 'Animation',
+			type: 'anim'
+		},
 	];
 
 	const container = makeDiv({
@@ -75,9 +83,19 @@ window.onload = () =>
 		className: 'logoDiv'
 	});
 
-	const redraw = () => {
+	const redraw = (final = true) => {
 		logoDiv.innerHTML = '';
-		logoDiv.appendChild(drawLogo(settings));
+		const svg = drawLogo(settings);
+		logoDiv.appendChild(svg);
+
+		clearTimeout(animTimeoutHandle);
+		animTimeoutHandle = setTimeout(() => {
+			animate(svg, settings);
+			for(const a of [...document.querySelectorAll('animate[start=true]')])
+			{
+				a.beginElement();
+			}
+		}, final ? 0 : 500);
 	};
 
 	const table = makeDiv('table', {
@@ -123,6 +141,35 @@ window.onload = () =>
 				redraw();
 			}
 		}
+		else if(def.type == 'anim')
+		{
+			const dropdownCell = makeDiv('td', {
+				parent: row,
+				className: 'dropdownCell'
+			});
+
+			const select = makeDiv('select', {
+				parent: dropdownCell,
+				className: 'select',
+			});
+
+			for(const anim of ['none', ...Object.keys(anims)])
+			{
+				makeDiv('option', {
+					parent: select,
+					value: anim,
+					innerText: anim
+				})
+			}
+
+			select.value = settings[def.id];
+
+			select.onchange = () => {
+				const val = select.value;
+				settings[def.id] = val;
+				redraw();
+			}
+		}
 		else
 		{
 			const sliderCell = makeDiv('td', {
@@ -155,7 +202,7 @@ window.onload = () =>
 				slider.value = val;
 				number.value = val;
 				settings[def.id] = val;
-				redraw();
+				redraw(false);
 			};
 
 			slider.oninput = () => onChange(slider.value);
@@ -169,6 +216,14 @@ window.onload = () =>
 		className: 'download',
 		value: 'Download',
 		onclick: () => downloadSvg(logoDiv.children[0])
+	});
+
+	const play = makeDiv('input', {
+		parent: settingsDiv,
+		type: 'button',
+		className: 'play',
+		value: 'Play',
+		onclick: redraw
 	});
 
 	redraw();

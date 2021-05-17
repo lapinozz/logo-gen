@@ -27,6 +27,8 @@ export default function drawLogo(settings)
 
 	const scale = 3; 
 	svg.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	svg.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+	svg.setAttribute('version', "1.1");
 	svg.setAttribute('width', size.x * scale + 'px');
 	svg.setAttribute('height', size.y * scale + 'px');
 
@@ -136,7 +138,7 @@ export default function drawLogo(settings)
 
 		zSegments.push({p1, p2});
 
-		addLine(p1, p2, lineWidth, "red", 'zSegment' + 0);
+		addLine(p1, p2, lineWidth, "red", 'zSegment' + x);
 	}
 
 	const lStart = Vec.fromAngle(lStartAngle - 90).mul(radius).add(center);

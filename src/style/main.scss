@@ -76,12 +76,13 @@ body
 	}
 }
 
-.download
+.download, .play
 {
 	margin-top: 1rem;
 	border-radius: 5px;
 	transition-duration: 0.4s;
 	background-color: white;
+	margin-right: 1rem;
 	color: black;
 	border: 2px solid #4CAF50; /* Green */
 
@@ -89,14 +90,4 @@ body
 	  background-color: #4CAF50; /* Green */
 	  color: white;
 	}
-}
-
-.animate
-{
-
-}
-
-@keyframes circle {
-  0%   {stroke-width: 0;}
-  100%   {stroke-width: 20;}
 }
