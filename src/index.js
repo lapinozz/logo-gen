@@ -84,13 +84,23 @@ window.onload = () =>
 	});
 
 	const redraw = (final = true) => {
-		logoDiv.innerHTML = '';
-		const svg = drawLogo(settings);
-		logoDiv.appendChild(svg);
+		const draw = (doAnim = false) => {
+			logoDiv.innerHTML = '';
+			const svg = drawLogo(settings);
+			if(doAnim)
+			{
+				animate(svg, settings);
+			}
+			logoDiv.appendChild(svg);
+		};
+
+		draw();
 
 		clearTimeout(animTimeoutHandle);
-		animTimeoutHandle = setTimeout(() => {
-			animate(svg, settings);
+		animTimeoutHandle = setTimeout(() =>
+		{
+			draw(true);
+
 			for(const a of [...document.querySelectorAll('animate[start=true]')])
 			{
 				a.beginElement();

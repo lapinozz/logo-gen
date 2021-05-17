@@ -9,8 +9,6 @@ export function addAnim(svg, attributes)
 		elem = svg.getElementById(elem);
 	}
 
-	console.log(elem)
-
 	if(!elem)
 	{
 		return;
