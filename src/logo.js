@@ -44,8 +44,7 @@ export default function drawLogo(settings)
 				r: radius - lineWidth / 2,
 				fill: "none",
 				stroke: stroke,
-				'stroke-width': 1,
-				id
+				'stroke-width': 1
 			});
 
 			appendSvg('circle', {
@@ -54,8 +53,7 @@ export default function drawLogo(settings)
 				r: radius + lineWidth / 2,
 				fill: "none",
 				stroke: stroke,
-				'stroke-width': 1,
-				id
+				'stroke-width': 1
 			});
 		}
 		else
@@ -86,8 +84,7 @@ export default function drawLogo(settings)
 				r: radius,
 				fill: "none",
 				stroke: "red",
-				'stroke-width': 1,
-				id
+				'stroke-width': 1
 			});
 
 			appendSvg('line', {
@@ -98,8 +95,7 @@ export default function drawLogo(settings)
 				r: radius,
 				fill: "none",
 				stroke: "red",
-				'stroke-width': 1,
-				id
+				'stroke-width': 1
 			});
 		}
 		else
