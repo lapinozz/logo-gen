@@ -3,7 +3,7 @@ const globImporter = require('node-sass-glob-importer');
 const extract = require("mini-css-extract-plugin");
 const path = require("path");
 
-module.exports = {
+const siteTarget = {
   module: {
     rules: [
       {
@@ -16,14 +16,14 @@ module.exports = {
         use: ["babel-loader"]
       },
       {
-      	test: /\.(png|jpe?g|gif|svg|ttf|ico)$/,
-	  	use: [{
-	      //using file-loader
-	      loader: 'file-loader',
-	      options: {
-	        outputPath: "assets"
-	      }
-	    }]
+        test: /\.(png|jpe?g|gif|svg|ttf|ico)$/,
+      use: [{
+        //using file-loader
+        loader: 'file-loader',
+        options: {
+          outputPath: "assets"
+        }
+      }]
       }
     ]
   },
@@ -40,6 +40,32 @@ module.exports = {
     })
   ],
   output: {
-  	publicPath: './',
+    publicPath: './',
   }
 };
+
+const libTarget = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
+      }
+    ]
+  },
+  optimization: {
+    splitChunks: { chunks: "all" }
+  },
+  target: 'web',
+  entry: './src/lib.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    library: 'Logo',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+    filename: 'logo.js',
+  },
+};
+
+module.exports = [siteTarget, libTarget];
