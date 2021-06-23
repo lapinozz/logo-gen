@@ -20,7 +20,7 @@ export default function drawLogo(settings)
 		return el;
 	};
 
-	const {radius, padding, lineWidth, lStartAngle, zAngles0, zAngles1, zAngles2, isPath} = settings;
+	const {color, radius, padding, lineWidth, lStartAngle, zAngles0, zAngles1, zAngles2, isPath} = settings;
 
 	const size = new Vec((radius + padding) * 2, (radius + padding) * 2);
 	const center = size.div(2)
@@ -83,7 +83,7 @@ export default function drawLogo(settings)
 				y2: p2.y + perp.y,
 				r: radius,
 				fill: "none",
-				stroke: "red",
+				stroke,
 				'stroke-width': 1
 			});
 
@@ -94,7 +94,7 @@ export default function drawLogo(settings)
 				y2: p2.y - perp.y,
 				r: radius,
 				fill: "none",
-				stroke: "red",
+				stroke,
 				'stroke-width': 1
 			});
 		}
@@ -107,14 +107,14 @@ export default function drawLogo(settings)
 				y2: p2.y,
 				r: radius,
 				fill: "none",
-				stroke: "red",
+				stroke,
 				'stroke-width': lineWidth,
 				id
 			});
 		}
 	};
 
-	addCircle(center, radius, lineWidth, 'red', 'circle');	
+	addCircle(center, radius, lineWidth, color || 'red', 'circle');	
 
 	const zAngles = [
 		zAngles0 - 90,
@@ -134,15 +134,15 @@ export default function drawLogo(settings)
 
 		zSegments.push({p1, p2});
 
-		addLine(p1, p2, lineWidth, "red", 'zSegment' + x);
+		addLine(p1, p2, lineWidth, color || 'red', 'zSegment' + x);
 	}
 
 	const lStart = Vec.fromAngle(lStartAngle - 90).mul(radius).add(center);
 	const lMid = lineLineIntersection(zSegments[1].p1, zSegments[1].p2, lStart, lStart.add(0, 1));
 	const lEnd = circleSegmentIntersection(center, radius, lMid, lMid.add(zSegments[2].p2.sub(zSegments[2].p1).normalize().mul(radius * radius)))[0];
 
-	addLine(lStart, lMid, lineWidth, "red", 'lSegment' + 0);
-	addLine(lMid, lEnd, lineWidth, "red", 'lSegment' + 1);
+	addLine(lStart, lMid, lineWidth, color || 'red', 'lSegment' + 0);
+	addLine(lMid, lEnd, lineWidth, color || 'red', 'lSegment' + 1);
 		
 	return svg;
 }
