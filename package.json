@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
-    "start": "webpack serve --mode development --port 8050 --host 192.168.0.23 --https --cert private.pem --key private.key"
+    "start": "webpack serve --mode development --port 8050 --https --cert private.pem --key private.key"
   },
   "keywords": [],
   "author": "",
@@ -28,5 +28,7 @@
     "webpack-cli": "^4.1.0",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "animejs": "^3.2.1"
+  }
 }

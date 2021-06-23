@@ -1,7 +1,9 @@
 import Vec from './vec.js'
 import {lineLineIntersection, circleSegmentIntersection} from './utils.js'
 
-export function addAnim(svg, attributes)
+import anime from 'animejs'
+
+export function addKeyframe(svg, timeline, attributes)
 {
 	let elem = attributes['elem'];
 	if(typeof elem == 'string')
@@ -15,9 +17,6 @@ export function addAnim(svg, attributes)
 	}
 
 	delete attributes['elem'];
-
-	const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-	elem.appendChild(anim);
 
 	if(attributes['stroke'] || attributes['stroke-reversed'])
 	{
@@ -43,115 +42,101 @@ export function addAnim(svg, attributes)
 		}
 
 		attributes.elemAttr['stroke-dasharray'] = length;
+		elem.setAttribute('stroke-dasharray', length);
 
 		if(attributes['stroke-reversed'])
 		{
-			attributes.elemAttr['stroke-dashoffset'] = 0;
 			attributes.from = 0;
 			attributes.to = length;
 		}
 		else
 		{
-			attributes.elemAttr['stroke-dashoffset'] = length;
 			attributes.from = length;
 			attributes.to = 0;
 		}
 	}
 
-    for(let attr in attributes)
-    {
-        const value = attributes[attr];
+    const {attr, duration, from, to, dur, easing, offset} = attributes;
 
-        if(attr == 'attr')
-        {
-        	attr = 'attributeName';
-        }
+    const keyframes = [{duration: 0}, {duration: dur}];
+    keyframes[0][attr] = from;
+    keyframes[1][attr] = to;
 
-        if(attr == 'elemAttr')
-        {
-        	for(const a in value)
-        	{
-        		elem.setAttribute(a, value[a]);
-        	}
-        }
-        else
-        {
-        	anim.setAttribute(attr, value);
-        }
-    }
-
-    return anim;
+    timeline.add({
+    	targets: elem,
+    	duration: dur,
+    	easing: easing || 'linear',
+    	keyframes
+	}, offset || '+=0');
 }
 
-function basic(svg, settings, lOffset = '0s')
+function basic(svg, settings, lOffset0, lOffset1)
 {
 	const {lineWidth} = settings;
 
-	addAnim(svg, {
-		start: true,
-		id: 'circleAnim',
+	console.log(settings)
+
+	const timeline = anime.timeline({
+		loop: !!settings.loop,
+		direction: settings.alternate ? 'alternate' : 'normal'
+	});
+
+	const add = (attrs) => addKeyframe(svg, timeline, attrs);
+
+	add({
 		elem: 'circle',
 		attr: 'stroke-width',
 		from: 0,
 		to: lineWidth,
-		dur: '0.5s',
-		begin: 'indefinite',
-		calcMode: "spline",
-		keySplines: "0.4 0 0.2 1"
+		dur: 200,
+		easing: 'easeInOutQuad'
 	});
 
 	const lineTemplate = {
-		dur: '0.25s',
-		fill: "freeze",
+		dur: 250,
 		stroke: true,
-		calcMode: "spline",
-		keySplines: "0.4 0 0.2 1"
+		easing: 'easeInOutQuad'
 	};
 
-	addAnim(svg, {
+	add({
 		...lineTemplate,
-		id: 'zSegmentA',
 		elem: 'zSegment0',
-		begin: 'circleAnim.end - 0.2s',
+		offset: '-=100'
 	});
 
-	addAnim(svg, {
+	add({
 		...lineTemplate,
-		id: 'zSegmentB',
 		elem: 'zSegment1',
-		begin: 'zSegmentA.end',
 	});
 
-	addAnim(svg, {
+	add({
 		...lineTemplate,
-		id: 'zSegmentC',
 		elem: 'zSegment2',
-		begin: 'zSegmentB.end',
 	});
 
-	addAnim(svg, {
+	add({
 		...lineTemplate,
-		id: 'lSegmentA',
 		elem: 'lSegment0',
-		begin: 'zSegmentC.end - ' + lOffset,
+		offset: lOffset0,
 	});
 
-	addAnim(svg, {
+	add({
 		...lineTemplate,
-		id: 'lSegmentB',
 		elem: 'lSegment1',
-		begin: 'lSegmentA.end',
+		offset: lOffset1,
 	});
+
+	return timeline;
 }
 
 function semiSyncroEnd(svg, settings)
 {
-	basic(svg, settings, '0.25s');
+	return basic(svg, settings, '-=250');
 }
 
 function syncroEnd(svg, settings)
 {
-	basic(svg, settings, '0.5s');
+	return basic(svg, settings, '-=500', '-=250');
 }
 
 const anims = { basic, semiSyncroEnd, syncroEnd};
@@ -160,5 +145,5 @@ export {anims};
 export default function animate(svg, settings)
 {
 	const func = anims[settings.anim];
-	func && func(svg, settings);
+	return func && func(svg, settings);
 }
