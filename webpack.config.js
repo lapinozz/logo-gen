@@ -39,7 +39,4 @@ module.exports = {
      /* favicon: "./src/favicon.ico" */
     })
   ],
-  output: {
-  	publicPath: './',
-  }
 };

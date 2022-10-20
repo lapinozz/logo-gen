@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
-    "start": "webpack serve --mode development --port 8050 --host 192.168.0.23 --https --cert private.pem --key private.key"
+    "start": "webpack serve --mode development --port 8056"
   },
   "keywords": [],
   "author": "",
@@ -24,9 +24,9 @@
     "sass": "^1.28.0",
     "sass-loader": "^10.0.5",
     "style-loader": "^2.0.0",
-    "webpack": "^5.3.2",
+    "webpack": "^5.65.0",
     "webpack-cli": "^4.1.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^4.6.0"
   },
   "dependencies": {}
 }
