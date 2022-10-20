@@ -17,7 +17,9 @@ window.onload = () =>
 		zAngles1: -110 + 360,
 		zAngles2: 140,
 		isPath: false,
-		anim: 'basic'
+		anim: 'basic',
+		loop:  false,
+		alternate:  false,
 	};
 
 	const settingsDef = [
@@ -66,6 +68,16 @@ window.onload = () =>
 			name: 'Animation',
 			type: 'anim'
 		},
+		{
+			id: 'loop',
+			name: 'Loop',
+			type: 'checkbox'
+		},
+		{
+			id: 'alternate',
+			name: 'Alternate',
+			type: 'checkbox'
+		},
 	];
 
 	const container = makeDiv({
@@ -100,11 +112,6 @@ window.onload = () =>
 		animTimeoutHandle = setTimeout(() =>
 		{
 			draw(true);
-
-			for(const a of [...document.querySelectorAll('animate[start=true]')])
-			{
-				a.beginElement();
-			}
 		}, final ? 0 : 500);
 	};
 
